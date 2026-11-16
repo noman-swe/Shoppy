@@ -1,0 +1,35 @@
+{
+  "announcements": [
+    "Free Delivery on Orders ৳1,500+",
+    "7 Days Easy Return & Refund",
+    "100% Authentic Chinese Imports"
+  ],
+  "navLinks": [
+    { "name": "Home", "href": "/", "active": true },
+    { "name": "All Products", "href": "/shop" },
+    { "name": "Flash Deals", "href": "/shop?deal=flash", "highlight": true },
+    { "name": "Track Order", "href": "/track-order" }
+  ],
+  "trustPillars": [
+    {
+      "title": "Shenzhen Direct",
+      "description": "Tested & sourced directly from audited tech factories.",
+      "icon": "fa-award"
+    },
+    {
+      "title": "Cash on Delivery",
+      "description": "Inspect product upon parcel arrival anywhere in BD.",
+      "icon": "fa-hand-holding-dollar"
+    },
+    {
+      "title": "7 Days Return",
+      "description": "Hassle-free replacement for any factory defects.",
+      "icon": "fa-rotate-left"
+    },
+    {
+      "title": "Express Courier",
+      "description": "Fast Steadfast, Pathao & RedX doorstep delivery.",
+      "icon": "fa-paper-plane"
+    }
+  ]
+}
