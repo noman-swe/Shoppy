@@ -1,0 +1,27 @@
+[
+  { "id": "all", "name": "All Categories", "slug": "all", "count": 35 },
+  {
+    "id": "smart-watch",
+    "name": "Smart Watches & Audio",
+    "slug": "smart-watch",
+    "count": 8
+  },
+  {
+    "id": "home-appliances",
+    "name": "Kitchen & Home Appliances",
+    "slug": "home-appliances",
+    "count": 10
+  },
+  {
+    "id": "lifestyle",
+    "name": "Lifestyle & Accessories",
+    "slug": "lifestyle",
+    "count": 9
+  },
+  {
+    "id": "computer-accessories",
+    "name": "Computer & Gaming",
+    "slug": "computer-accessories",
+    "count": 8
+  }
+]

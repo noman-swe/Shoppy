@@ -4,7 +4,6 @@ import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
-
 import "swiper/css";
 import "swiper/css/navigation";
 import ProductCard from "./ProductCard";
@@ -31,12 +30,11 @@ export default function ProductSliderSection({
     const filteredProducts = products.filter((product) => Boolean(product[filterKey]));
 
     if (filteredProducts.length === 0) return null;
-
     const prevClass = `custom-prev-${id}`;
     const nextClass = `custom-next-${id}`;
 
     return (
-        <section id={id} className="max-w-7xl xl:container mx-auto px-4 sm:px-6 lg:px-8 py-8 relative group">
+        <section id={id} className="max-w-7xl xl:container mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
 
             {/* card header */}
             <div className="flex items-center justify-between mb-6">
@@ -79,7 +77,6 @@ export default function ProductSliderSection({
                         </SwiperSlide>
                     ))}
                 </Swiper>
-
 
                 <SliderButtons
                     prevClass={prevClass}

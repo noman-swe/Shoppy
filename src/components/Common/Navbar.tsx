@@ -7,7 +7,6 @@ import {
     FaBagShopping,
     FaMagnifyingGlass,
     FaUser,
-    FaHeart,
     FaBasketShopping,
     FaBars,
     FaXmark
@@ -177,12 +176,7 @@ export default function Navbar() {
                         <Link href="/login" className="p-2 hover:text-[#14532d] transition-colors rounded-full hover:bg-slate-100 hidden sm:flex" title="Account / OTP Login">
                             <FaUser className="text-lg" />
                         </Link>
-
-                        <Link href="/wishlist" className="p-2 hover:text-[#14532d] transition-colors rounded-full hover:bg-slate-100 relative" title="Wishlist">
-                            <FaHeart className="text-lg" />
-                            <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">2</span>
-                        </Link>
-
+                       
                         <Link href="/cart" className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2 sm:px-3.5 rounded-full transition-all text-sm font-semibold">
                             <div className="relative">
                                 <FaBasketShopping className="text-base text-[#14532d]" />
