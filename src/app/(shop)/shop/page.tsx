@@ -5,9 +5,11 @@ import { useSearchParams } from 'next/navigation';
 import demoProducts from '@/data/demoProducts.json';
 import ProductCard from '@/components/Common/ProductCard';
 import ShopFilters from '@/components/Shop/ShopFilters';
+
 import { useFilteredProducts } from '@/utils/useFilteredProducts';
 import { FilterState, Product } from '@/data/types';
 import { FaFilter, FaSliders } from 'react-icons/fa6';
+import Pagination from '@/components/UI/Pagination';
 
 function ShopContent() {
     const searchParams = useSearchParams();
@@ -25,7 +27,23 @@ function ShopContent() {
     });
 
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 20;
+
     const filteredProducts = useFilteredProducts(demoProducts as Product[], filters);
+
+    // [Fix for Cascading Renders]: useEffect এর পরিবর্তে রেন্ডার ফেজে ফিল্টার পরিবর্তনের ওপর ভিত্তি করে পেজ রিসেট করা
+    const [prevFilters, setPrevFilters] = useState(filters);
+    if (filters !== prevFilters) {
+        setPrevFilters(filters);
+        setCurrentPage(1);
+    }
+
+    // Pagination Calculation
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
     const resetFilters = () => {
         setFilters({
@@ -36,6 +54,7 @@ function ShopContent() {
             sortBy: 'default',
             search: '',
         });
+        setCurrentPage(1);
     };
 
     return (
@@ -74,10 +93,10 @@ function ShopContent() {
                 </div>
             </div>
 
-            {/* Main Layout Grid */}
+            {/* Main Layout Grid - items-start ensures sticky sidebar works properly */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                {/* Desktop Sidebar Filters */}
-                <div className="hidden lg:block lg:col-span-3">
+                {/* Desktop Sidebar Filters with Sticky */}
+                <div className="hidden lg:block lg:col-span-3 sticky top-24">
                     <ShopFilters filters={filters} setFilters={setFilters} onReset={resetFilters} />
                 </div>
 
@@ -91,14 +110,23 @@ function ShopContent() {
                     </div>
                 )}
 
-                {/* Product Grid Area */}
-                <div className="lg:col-span-9">
-                    {filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                            {filteredProducts.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
+                {/* Product Grid & Pagination Area */}
+                <div className="lg:col-span-9 space-y-8">
+                    {currentProducts.length > 0 ? (
+                        <>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                {currentProducts.map((product) => (
+                                    <ProductCard key={product.id} product={product} />
+                                ))}
+                            </div>
+
+                            {/* Reusable Pagination Component */}
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={(page) => setCurrentPage(page)}
+                            />
+                        </>
                     ) : (
                         <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                             <FaSliders className="text-4xl text-slate-300 mx-auto mb-3" />

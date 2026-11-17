@@ -13,7 +13,7 @@ interface ShopFiltersProps {
 
 export default function ShopFilters({ filters, setFilters, onReset }: ShopFiltersProps) {
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-6 sticky top-24">
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <h3 className="font-bold text-slate-900 text-base">Filter Products</h3>
                 <button
@@ -43,29 +43,6 @@ export default function ShopFilters({ filters, setFilters, onReset }: ShopFilter
                     ))}
                 </div>
             </div>
-
-            {/* Stock Type Filter */}
-            {/* <div>
-                <h4 className="font-semibold text-xs text-slate-800 uppercase tracking-wider mb-3">Availability</h4>
-                <div className="space-y-2 text-xs font-medium text-slate-600">
-                    {[
-                        { label: 'All Items', value: '' },
-                        { label: 'Ready Stock (Dhaka)', value: 'ready' },
-                        { label: 'Pre-Order (China Direct)', value: 'pre-order' },
-                    ].map((item) => (
-                        <label key={item.value} className="flex items-center gap-2.5 cursor-pointer hover:text-slate-900">
-                            <input
-                                type="radio"
-                                name="stockType"
-                                checked={filters.badge === item.value}
-                                onChange={() => setFilters((prev) => ({ ...prev, badge: item.value }))}
-                                className="w-4 h-4 text-[#14532d] focus:ring-[#14532d] border-slate-300"
-                            />
-                            <span>{item.label}</span>
-                        </label>
-                    ))}
-                </div>
-            </div> */}
 
             {/* Price Range */}
             <div>
