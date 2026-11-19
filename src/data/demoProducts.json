@@ -131,7 +131,7 @@
   },
   {
     "id": "prod-11",
-    "title": "Bluetooth Car Adapter",
+    "title": "Bluetooth Car Adapter ----",
     "price": 600,
     "oldPrice": 900,
     "badge": "Ready Stock",
@@ -365,7 +365,7 @@
   },
   {
     "id": "prod-29",
-    "title": "Bluetooth RGB Ceiling Speaker Lamp",
+    "title": "Bluetooth RGB Ceiling Speaker Lamp ---",
     "price": 1890,
     "oldPrice": 2500,
     "badge": "Pre-Order",
@@ -403,7 +403,7 @@
     "category": "computer-accessories"
   },
   {
-    "id": "prod-32",
+    "id": "prod-32 ---",
     "title": "Adjustable Phone Desk Mount",
     "price": 420,
     "oldPrice": 650,

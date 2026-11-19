@@ -14,6 +14,7 @@ import {
 import staticData from '@/data/staticData.json';
 import MobileMenu from './MobileMenu';
 import { NavLinkItem } from '@/data/types';
+import { useCartStore } from '@/store/useCartStore';
 
 interface StaticDataType {
     announcements: string[];
@@ -31,6 +32,17 @@ export default function Navbar() {
     const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+    const [mounted, setMounted] = useState<boolean>(false);
+
+    const cart = useCartStore((state) => state.cart);
+    const toggleCartDrawer = useCartStore((state) => state.toggleCartDrawer);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const totalItems = mounted ? cart.reduce((sum, item) => sum + item.quantity, 0) : 0;
+    const totalPrice = mounted ? cart.reduce((sum, item) => sum + item.price * item.quantity, 0) : 0;
 
     // Prevent background scrolling when mobile menu is open
     useEffect(() => {
@@ -176,14 +188,23 @@ export default function Navbar() {
                         <Link href="/login" className="p-2 hover:text-[#14532d] transition-colors rounded-full hover:bg-slate-100 hidden sm:flex" title="Account / OTP Login">
                             <FaUser className="text-lg" />
                         </Link>
-                       
-                        <Link href="/cart" className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2 sm:px-3.5 rounded-full transition-all text-sm font-semibold">
+
+                        <button
+                            type="button"
+                            onClick={() => toggleCartDrawer(true)}
+                            aria-label="Open Cart Drawer"
+                            className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2 sm:px-3.5 rounded-full transition-all text-sm font-semibold cursor-pointer"
+                        >
                             <div className="relative">
                                 <FaBasketShopping className="text-base text-[#14532d]" />
-                                <span className="absolute -top-2 -right-2 bg-[#14532d] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">3</span>
+                                <span className="absolute -top-2 -right-2 bg-[#14532d] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    {totalItems}
+                                </span>
                             </div>
-                            <span className="hidden sm:inline text-xs font-bold text-slate-900">৳2,340</span>
-                        </Link>
+                            <span className="hidden sm:inline text-xs font-bold text-slate-900">
+                                ৳{totalPrice.toLocaleString()}
+                            </span>
+                        </button>
 
                         {/* Mobile Menu Hamburger Button */}
                         <button

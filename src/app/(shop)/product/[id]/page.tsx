@@ -3,10 +3,11 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import demoProducts from '@/data/demoProducts.json';
 import ProductSliderSection from '@/components/Common/ProductSliderSection';
 import { Product } from '@/data/types';
+import { useCartStore } from '@/store/useCartStore';
 import {
     FaStar,
     FaCartPlus,
@@ -17,18 +18,55 @@ import {
     FaMinus,
     FaPlus,
     FaWhatsapp,
+    FaCheck,
 } from 'react-icons/fa6';
 
-export default function ProductDetailsPage() {
-    const params = useParams();
-    const productId = params?.id as string;
+function ProductDetailsContent({ product }: { product: Product }) {
+    const router = useRouter();
 
-    const product = (demoProducts as Product[]).find((p) => p.id === productId) || demoProducts[0];
     const [quantity, setQuantity] = useState(1);
     const [selectedImage, setSelectedImage] = useState(product.image);
+    const [addedFeedback, setAddedFeedback] = useState(false);
+
+    const addToCart = useCartStore((state) => state.addToCart);
+    const setBuyNowProduct = useCartStore((state) => state.setBuyNowProduct);
 
     const decreaseQty = () => setQuantity((prev) => Math.max(1, prev - 1));
     const increaseQty = () => setQuantity((prev) => prev + 1);
+
+    const handleAddToCart = () => {
+        addToCart(
+            {
+                id: product.id,
+                title: product.title,
+                price: product.price,
+                oldPrice: product.oldPrice,
+                image: product.image,
+            },
+            quantity
+        );
+        setAddedFeedback(true);
+        setTimeout(() => setAddedFeedback(false), 1800);
+        toast.success(`${product.title} added to cart`, {
+  style: {
+    background: '#14532d',
+    color: '#ffffff',
+    border: '1px solid #16a34a',
+  },
+});
+    };
+
+    const handleBuyNow = () => {
+        setBuyNowProduct({
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            oldPrice: product.oldPrice,
+            image: product.image,
+            quantity,
+        });
+        router.push('/checkout?mode=buynow');
+    };
 
     return (
         <div className="max-w-7xl xl:container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -53,10 +91,11 @@ export default function ProductDetailsPage() {
                             fill
                             className="object-cover"
                             priority
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
-                        <span className="absolute top-4 left-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                        {/* <span className="absolute top-4 left-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
                             {product.badge || 'Ready Stock'}
-                        </span>
+                        </span> */}
                     </div>
 
                     {/* Thumbnail preview list */}
@@ -64,11 +103,14 @@ export default function ProductDetailsPage() {
                         {[product.image, product.image].map((img, idx) => (
                             <button
                                 key={idx}
+                                type="button"
                                 onClick={() => setSelectedImage(img)}
-                                className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${selectedImage === img ? 'border-[#14532d]' : 'border-slate-200 hover:border-slate-300'
+                                className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${selectedImage === img
+                                    ? 'border-[#14532d]'
+                                    : 'border-slate-200 hover:border-slate-300'
                                     }`}
                             >
-                                <Image src={img} alt="Thumbnail" fill className="object-cover" />
+                                <Image src={img} alt="Thumbnail" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                             </button>
                         ))}
                     </div>
@@ -89,15 +131,19 @@ export default function ProductDetailsPage() {
                             </div>
                             <span className="text-slate-300">|</span>
                             <span className="text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                                In Stock (Ready BD)
+                                In Stock
                             </span>
                         </div>
 
                         {/* Price Box */}
                         <div className="flex items-baseline gap-3 mt-5 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                            <span className="text-2xl sm:text-3xl font-black text-slate-900">৳{(product.price * quantity).toLocaleString()}</span>
+                            <span className="text-2xl sm:text-3xl font-black text-slate-900">
+                                ৳{(product.price * quantity).toLocaleString()}
+                            </span>
                             {product.oldPrice && (
-                                <span className="text-sm text-slate-400 line-through font-medium">৳{(product.oldPrice * quantity).toLocaleString()}</span>
+                                <span className="text-sm text-slate-400 line-through font-medium">
+                                    ৳{(product.oldPrice * quantity).toLocaleString()}
+                                </span>
                             )}
                             {product.oldPrice && (
                                 <span className="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full ml-auto">
@@ -113,13 +159,27 @@ export default function ProductDetailsPage() {
 
                         {/* Quantity Selector */}
                         <div className="mt-6">
-                            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Quantity</label>
+                            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+                                Quantity
+                            </label>
                             <div className="flex items-center border border-slate-200 rounded-xl w-36 bg-slate-50">
-                                <button onClick={decreaseQty} className="p-3 text-slate-600 hover:text-slate-900 transition-colors">
+                                <button
+                                    type="button"
+                                    onClick={decreaseQty}
+                                    className="p-3 text-slate-600 hover:text-slate-900 transition-colors"
+                                    aria-label="Decrease quantity"
+                                >
                                     <FaMinus className="text-xs" />
                                 </button>
-                                <span className="flex-1 text-center font-bold text-sm text-slate-900">{quantity}</span>
-                                <button onClick={increaseQty} className="p-3 text-slate-600 hover:text-slate-900 transition-colors">
+                                <span className="flex-1 text-center font-bold text-sm text-slate-900">
+                                    {quantity}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={increaseQty}
+                                    className="p-3 text-slate-600 hover:text-slate-900 transition-colors"
+                                    aria-label="Increase quantity"
+                                >
                                     <FaPlus className="text-xs" />
                                 </button>
                             </div>
@@ -129,10 +189,26 @@ export default function ProductDetailsPage() {
                     {/* Action Buttons */}
                     <div className="space-y-3 pt-4 border-t border-slate-100">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <button className="w-full bg-[#14532d] hover:bg-green-800 text-white py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md transition-all active:scale-95">
-                                <FaCartPlus className="text-base" /> Add to Cart
+                            <button
+                                type="button"
+                                onClick={handleAddToCart}
+                                className="w-full bg-[#14532d] hover:bg-green-800 text-white py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
+                            >
+                                {addedFeedback ? (
+                                    <>
+                                        <FaCheck className="text-base" /> Added to Cart
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaCartPlus className="text-base" /> Add to Cart
+                                    </>
+                                )}
                             </button>
-                            <button className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md transition-all active:scale-95">
+                            <button
+                                type="button"
+                                onClick={handleBuyNow}
+                                className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
+                            >
                                 <FaBolt className="text-base" /> Buy Now (COD)
                             </button>
                         </div>
@@ -172,4 +248,13 @@ export default function ProductDetailsPage() {
             />
         </div>
     );
+}
+
+export default function ProductDetailsPage() {
+    const params = useParams();
+    const productId = params?.id as string;
+
+    const product = (demoProducts as Product[]).find((p) => p.id === productId) || demoProducts[0];
+
+    return <ProductDetailsContent key={product.id} product={product} />;
 }
