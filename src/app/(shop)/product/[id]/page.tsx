@@ -8,6 +8,7 @@ import demoProducts from '@/data/demoProducts.json';
 import ProductSliderSection from '@/components/Common/ProductSliderSection';
 import { Product } from '@/data/types';
 import { useCartStore } from '@/store/useCartStore';
+import { toast } from 'sonner';
 import {
     FaStar,
     FaCartPlus,
